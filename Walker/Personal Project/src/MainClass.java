@@ -16,6 +16,7 @@ public class MainClass extends JFrame implements Runnable {
 	public static boolean gameover;
 	public boolean thing;
 	public static int score;
+	Shadow myShadow;
 	Ground myGround;
 	Target myTarget;
 	Arrow myArrow;
@@ -30,6 +31,7 @@ public class MainClass extends JFrame implements Runnable {
 		myArrow = new Arrow();
 		myTarget = new Target();
 		offscreen = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		myShadow = new Shadow(offscreen);
 		bg = offscreen.getGraphics();
 		Font f = bg.getFont().deriveFont(50f);
 		bg.setFont(f);
@@ -51,6 +53,7 @@ public class MainClass extends JFrame implements Runnable {
 		myGround.draw(bg);
 		myArrow.draw(bg);
 		myTarget.draw(bg);
+		myShadow.draw(bg);
 		if (myArrow.didWin()) {
 			bg.setColor(new Color(0x1ADB2A));
 			bg.drawString("You Win", WIDTH / 2, HEIGHT / 2);
