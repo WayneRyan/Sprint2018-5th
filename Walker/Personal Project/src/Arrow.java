@@ -9,15 +9,17 @@ import java.awt.image.BufferedImage;
 public class Arrow implements KeyListener {
 
 	public static final int SIZE = 20;
-	double shadow;
 	double direction;
 	double speed;
 	double dV;
 	double gravity;
+	double time;
 	private boolean leftPressed, rightPressed, spacePressed, enterPressed;
 	public boolean didWin;
 	public double arrowX;
 	public double arrowY;
+
+
 
 	public Arrow() {
 		didWin = false;
@@ -25,7 +27,8 @@ public class Arrow implements KeyListener {
 		arrowX = MainClass.WIDTH / 10;
 		arrowY = MainClass.HEIGHT / 2;
 		leftPressed = rightPressed = false;
-		shadow = 30;
+
+		time = 0;
 		dV = 0;
 		speed = 0;
 		direction = 0;
@@ -33,16 +36,16 @@ public class Arrow implements KeyListener {
 	}
 
 	public void update() {
+		if(speed!=0)time += 0.03;
 		if (leftPressed && speed == 0)
 			dV -= 0.05;
-			shadow = -0.05;
 		if (rightPressed && speed == 0)
 			dV += 0.05;
-			shadow +=0.05;
 		direction += dV;
 		dV *= 0.01;
-		if (spacePressed)
+		if (spacePressed) {
 			speed = 10;
+		}
 		if (speed != 0)
 			dV += gravity;
 		arrowX += speed * Math.sin(direction);
@@ -54,17 +57,19 @@ public class Arrow implements KeyListener {
 		if (spacePressed && didWin) {
 			didWin = false;
 		}
-		if (spacePressed && MainClass.gameover){
+		if (spacePressed && MainClass.gameover) {
 			MainClass.gameover = false;
 		}
+
+		System.out.println(time);
 	}
 
 	public void restart() {
 		speed = 0;
+		time = 0;
 		arrowX = MainClass.WIDTH / 10;
 		arrowY = MainClass.HEIGHT / 2;
 		MainClass.gameover = false;
-
 	}
 
 	public void draw(Graphics g) {
@@ -74,7 +79,7 @@ public class Arrow implements KeyListener {
 		at = new AffineTransform();
 		at.translate(arrowX, arrowY);
 		at.rotate(direction);
-		at.translate(-arrowX, -arrowY);
+		at.translate(-arrowX, -arrowY - 15);
 		g2.setTransform(at);
 		int[] x = { (int) arrowX - 10, (int) arrowX, (int) arrowX + 10 };
 		int[] y = { (int) arrowY + 12, (int) arrowY - 15, (int) arrowY + 12 };
@@ -91,12 +96,16 @@ public class Arrow implements KeyListener {
 		g.setColor(new Color(0x858585));
 		g.fillPolygon(n, m, 3);
 		g2.setTransform(old);
-		//shadow
-		g.setColor(Color.black);
-		g.fillRect((int) arrowX, 590, (int)shadow, 5);
-
+		if (time >= 14) {
+			g.setColor(Color.pink);
+			g.fillOval((int) arrowX, (int) arrowY, 50, 67);
+			g.setColor(Color.blue);
+			g.fillOval((int) arrowX + 10, (int) arrowY + 10, 10, 20);
+			g.fillOval((int) arrowX + 30, (int) arrowY + 25, 10, 20);
+			g.fillOval((int) arrowX + 15, (int) arrowY + 35, 10, 20);
+		}
 	}
-	
+
 	public boolean hitTarget(Target a) {
 		if (arrowX + SIZE < a.getX())
 			return false;
@@ -111,13 +120,15 @@ public class Arrow implements KeyListener {
 	}
 
 	public boolean hitGround(BufferedImage im) {
-		int checkX = (int)(arrowX + speed * Math.sin(direction));
-		int checkY = (int)(arrowY - speed * Math.cos(direction));
-		if(checkX<0 || checkY<0 ||checkX>=im.getWidth() || checkY>= im.getHeight()){
+		int checkX = (int) (arrowX + 3 * speed * Math.sin(direction));
+		int checkY = (int) (arrowY - 3 * speed * Math.cos(direction));
+		if (checkX < 0 || checkY < 0 || checkX >= im.getWidth()
+				|| checkY >= im.getHeight()) {
 			return false;
 		}
 		Color c = new Color(im.getRGB(checkX, checkY));
-		if(c.equals(new Color(0x13BD4E)))return true;
+		if (c.equals(Ground.myColor))
+			return true;
 		return false;
 	}
 

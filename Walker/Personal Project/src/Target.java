@@ -20,15 +20,14 @@ public class Target {
 	}
 
 	public void draw(Graphics g) {
-		g.setColor(new Color(0x733E3E));
+		g.setColor(new Color(0x634600));
 		g.fillRect((int) x, (int) y, W, H);
 		int[] k = { (int) x, (int) x + 10, (int) x };
 		int[] l = { (int) y + 60, (int) y + 60, (int) y + 71 };
-		g.setColor(Color.black);
+		g.setColor(new Color(0x0F0F0F));
 		g.fillPolygon(k, l, 3);
 		int[] n = { (int) x + 10, (int) x + 20, (int) x + 20 };
 		int[] m = { (int) y + 60, (int) y + 60, (int) y + 71 };
-		g.setColor(Color.black);
 		g.fillPolygon(n, m, 3);
 		g.setColor(Color.red);
 		g.fillRect((int) x - 2, (int) y + 5, 5, H - 10);
